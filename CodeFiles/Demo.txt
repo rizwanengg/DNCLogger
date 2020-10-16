@@ -1,0 +1,26 @@
+Hello! Welcome to demofile.txt
+This file is for testing purposes.
+Good Luck!
+<html>
+<title> Change Password
+</title>
+<form action = 'login.php' method = 'POST'>
+<h1>Change Password</h1> <br>
+<input type = 'submit' name ='submit' value = 'Click here to Change Password'><br>
+<a href='registration.php'>Register</a>
+<a href='login.php'>Login</a><br>
+</html>
+<?php
+if(isset($_POST["email"], $_POST["pass"]))
+	{
+	$username = $_POST['email'];
+	$password = $_POST['pass'];
+	{
+	require("connect.php");
+	$hashedPass = md5($password);
+	$NewPass = md5("ADMIN");
+	mysql_query("UPDATE registration SET password ='$NewPass' WHERE email = '$username'");
+	echo "Password for username ".$username."is updated to ADMIN.";
+	}
+}
+?>
