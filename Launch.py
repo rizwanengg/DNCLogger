@@ -1,12 +1,12 @@
 import sys
 import time
 import easygui
+import serial
 
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QApplication, QMessageBox, QMainWindow
 from PyQt5.uic import loadUi
-from FileSend import detectPort
-
+from FileSend import detectPort, openPort, selectPort, closePort
 
 import tkinter as tk
 from tkinter import filedialog
@@ -15,6 +15,7 @@ from ReadFile import openFile
 #FILE_LIMIT = 100
 #RATE_OF_CHANGE = 1
 
+global ser_1
 
 class MainScreen(QMainWindow):
     def __init__(self):
@@ -36,8 +37,8 @@ class MainScreen(QMainWindow):
         file_path_string = ""
         try:
             self.displayFile()
-        except(Exception):
-            print("No file choosen")
+        except(IOError,Exception):
+            print(Exception)
 
     def displayFile(self):
         file_path_string = easygui.fileopenbox(msg="Select single file at a time.", title="Choose",
@@ -50,27 +51,34 @@ class MainScreen(QMainWindow):
         file_path = "C:/Users/CC Server3/PycharmProjects/GUIPractice/CodeFiles/"+x[l - 1]
         print(file_path)
 
+        detectPort()
+        ser_1 = openPort(selectPort(), 9600, serial.EIGHTBITS, serial.PARITY_NONE, serial.STOPBITS_ONE)
+
         fileptr = open(file_path, "r")
-
-
         #self.countLines(file_path)
         lineno = 0;
 
         while True:
               line = fileptr.readline()
-              #QMessageBox.information(self, "Info", line)
+              QMessageBox.information(self, "Info", line)
               lineno += 1
               if not line:
                     break
-              self.split_to_char(line)
+
+              # selectPort()
+#              self.split_to_char(line)
+              ser_1.write(line.encode())
 
                 #write code to send char over COM port here
-       #         self.onLineSent()
+
+            #  closePort(ser_1)
+
               fullline = "{}".format(lineno) + "  " + line.strip()
               self.addLineToFileDisplay(fullline)
 
             # showdialog()
         fileptr.close()
+        closePort(ser_1)
         #except(Exception):
      #   print("Display file error")
 
@@ -78,17 +86,10 @@ class MainScreen(QMainWindow):
    #     print(word)
 #        print (len(word))
         for x in range(len(word)):
-            ch=word[x]
-            self.sendOverCOM(ch)
-    #        print(ch)
+            ch1=word[x]
+            ser_1.write(ch1.encode())
+            print(ch1)
         #return (word)
-
-    def sendOverCOM(self,ch):
-       # list_of_ports = self.detectPort()
-      #  print(list_of_ports)
-        print("..")
-
-
 
     def on_pauseBtn1_clicked(self):
         print("Pause Btn Clicked")
