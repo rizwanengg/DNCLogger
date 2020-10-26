@@ -6,7 +6,7 @@ import serial
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QApplication, QMessageBox, QMainWindow
 from PyQt5.uic import loadUi
-from FileSend import detectPort, openPort, selectPort, closePort
+from SerialPortFunc import detectPort, openPort, selectPort, closePort
 
 import tkinter as tk
 from tkinter import filedialog
